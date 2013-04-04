@@ -9,6 +9,9 @@ gem "sinatra-activerecord"
 
 gem "haml"
 gem "sass"
+
+# gem 'therubyracer'
+gem 'coffee-script'
 gem "rack-coffee"
 
 group :development do

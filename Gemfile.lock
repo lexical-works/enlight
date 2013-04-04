@@ -84,6 +84,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  coffee-script
   haml
   rack-coffee
   sass

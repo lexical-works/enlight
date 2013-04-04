@@ -10,11 +10,7 @@ Sass::Plugin.options[:css_location] = 'public/stylesheets'
 use Sass::Plugin::Rack
 
 require 'rack/coffee'
-use Rack::Coffee, {
-		#root: 'public',
-	 	urls: '/javascripts/',
-	 	output_path: '/public/javascripts'
-	}
+use Rack::Coffee, :root => './public'
 
 require "./app"
 run Sinatra::Application
