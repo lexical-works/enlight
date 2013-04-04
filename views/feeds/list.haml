@@ -1,0 +1,16 @@
+%h1 Feed List
+%br
+
+%ul
+- @feeds.each do |feed|
+	%li = feed.url
+
+%br
+%br
+%h1 New Feed
+
+/ %form { action:"/feeds/new", method="post" }
+/ 	%label { for:"url" } URL:
+/ 	%input { type:"text", id:"url", name:"feed_url" }
+/ 	%br
+/ 	%input { type:"submit", value:"Add Feed" }

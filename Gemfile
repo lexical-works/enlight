@@ -7,6 +7,10 @@ gem "sqlite3"
 gem "activerecord"
 gem "sinatra-activerecord"
 
+gem "haml"
+gem "sass"
+gem "rack-coffee"
+
 group :development do
 	gem "tux"
 end

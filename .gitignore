@@ -13,6 +13,7 @@ test/version_tmp
 tmp
 *.sublime-project
 *.sublime-workspace
+.sass-cache
 
 # YARD artifacts
 .yardoc
