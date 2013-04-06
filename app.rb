@@ -14,9 +14,10 @@ get '/' do
 end
 
 get '/feeds/list' do
+	puts 'feeds list'
 	@feeds = Feed.order("created_at DESC")
 	@feed = Feed.new
-	haml :"feeds/list"
+	haml :"feeds/list", layout: false
 end
 
 get '/feeds/show/:id' do |id|

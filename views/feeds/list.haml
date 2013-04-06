@@ -1,14 +1,11 @@
-%h1 Feed List
-%br
+%h3 Feed List
 
 %ul
-- @feeds.each do |feed|
-	%a{:href => "/feeds/show/#{feed.id}"}
-		%li= feed.title + " - " + feed.url
+	- @feeds.each do |feed|
+		%li
+			%a{:href => "/feeds/show/#{feed.id}"}= feed.title + " - " + feed.url
 
-%br
-%br
-%h1 New Feed
+%h3 New Feed
 
 / %form { action:"/feeds/new", method="post" }
 / 	%label { for:"url" } URL:
