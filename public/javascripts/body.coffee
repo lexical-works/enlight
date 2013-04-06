@@ -1,3 +1,5 @@
+# test if script can be included inside <body></body> tags
+
 $ ->
 	$('#addlinebutton').click ->
 		$('#lastline').before '<li><strong>New Line Added :</strong> ' + new Date + '</li>'
@@ -14,4 +16,4 @@ $ ->
 			success: (data) ->
 				$('#feedlist').html data
 			error: (XMLHttpRequest, textStatus, errorThrown) ->
-				alert XMLHttpRequest
+				alert XMLHttpRequest + "<br>" + textStatus + "<br>" + errorThrown

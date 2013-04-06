@@ -14,10 +14,30 @@ get '/' do
 end
 
 get '/feeds/list' do
-	puts 'feeds list'
 	@feeds = Feed.order("created_at DESC")
-	@feed = Feed.new
 	haml :"feeds/list", layout: false
+end
+
+post '/feeds/new' do
+	begin
+		open(params[:feed_url]) do |f|
+			rss_content = f.read
+			rss = RSS::Parser.parse(rss_content, false)
+			
+			feed = Feed.new
+			feed.title = rss.channel.title
+			feed.url = params[:feed_url]
+			feed.description = rss.channel.description
+			feed.save
+
+			@feeds = Feed.order("created_at DESC")
+			haml :"feeds/list", layout: false
+		end
+	rescue Exception => e
+		@error_message = "RSS source is broken... Please check your RSS source and see if it's still available."
+		@error_exception = e
+		haml :exception
+	end
 end
 
 get '/feeds/show/:id' do |id|
@@ -30,7 +50,9 @@ get '/feeds/show/:id' do |id|
 			rss_content = f.read
 		end
 	rescue Exception => e
-		return "RSS source is broken... Please check your RSS source and see if it's still available."
+		@error_message = "RSS source is broken... Please check your RSS source and see if it's still available."
+		@error_exception = e
+		haml :exception
 	end
 
 	@rss = RSS::Parser.parse(rss_content, false)

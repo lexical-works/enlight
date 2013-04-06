@@ -7,8 +7,9 @@
 
 %h3 New Feed
 
-/ %form { action:"/feeds/new", method="post" }
-/ 	%label { for:"url" } URL:
-/ 	%input { type:"text", id:"url", name:"feed_url" }
-/ 	%br
-/ 	%input { type:"submit", value:"Add Feed" }
+%form{ id:"create_feed_form", action:"/feeds/new", method:"post" }
+	%label{ for:"url" } URL:
+	%input{ type:"text", id:"url", name:"feed_url" }
+	%input{ type:"submit", value:"Add Feed" }
+
+%script{src: '/javascripts/feedlist.js'}
