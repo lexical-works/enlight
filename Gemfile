@@ -13,6 +13,11 @@ gem "sass"
 # gem 'therubyracer'
 gem 'coffee-script'
 gem "rack-coffee"
+gem 'rack-test'
+
+gem 'mongo_mapper'
+gem 'bson_ext'
+gem 'sinatra-mongomapper'
 
 group :development do
 	gem "tux"

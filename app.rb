@@ -1,65 +1,88 @@
 require 'sinatra'
 require 'sinatra/activerecord'
+require 'sinatra/mongomapper'
 require 'sinatra/reloader' if (development? && !defined? $_rakefile)
 require 'haml'
 require 'rss'
+require 'json'
 require 'open-uri'
+require 'mongo_mapper'
 
 require './models/Feed'
 
-set :database, "sqlite3:///db/enlight.db"
 
-get '/' do
-	haml :"index"
+configure :development do
+	set :mongomapper, 'mongomapper://root:Adventure41@widmore.mongohq.com:10010/enlight-development'
 end
 
-get '/feeds/list' do
-	@feeds = Feed.order("created_at DESC")
-	haml :"feeds/list", layout: false
+configure :test do
+	set :mongomapper, 'mongomapper://root:Adventure41@widmore.mongohq.com:10000/enlight-test'
 end
 
-post '/feeds/new' do
+
+# Completed.
+get '/feeds' do
+	feeds = Feed.sort :created_at.desc
+	status 200
+	feeds.to_json
+end
+
+
+# Completed with no tests.
+get '/feeds/:id' do |id|
+	feed = Feed.find id
+	if feed then
+		status 200
+		feed.to_json
+	else
+		status 404
+	end
+end
+
+
+# TODO with no tests.
+put '/feeds/:id' do |id|
+	feed = Feed.find id
+	feed.url = params[:url]
+	feed.save
+	feed.to_json
+end
+
+
+# Completed and fully tested.
+post '/feeds' do
+	data = JSON.parse request.body.read.to_s
+	if data.has_key?('url') == false then
+		status 400
+		return { reason: 'NO_URL' }.to_json
+	end
+
 	begin
-		open(params[:feed_url]) do |f|
+		open(data['url']) do |f|
 			rss_content = f.read
 			rss = RSS::Parser.parse(rss_content, false)
 			
 			feed = Feed.new
 			feed.title = rss.channel.title
-			feed.url = params[:feed_url]
+			feed.url = data['url']
 			feed.description = rss.channel.description
 			feed.save
 
-			@feeds = Feed.order("created_at DESC")
-			haml :"feeds/list", layout: false
+			feed.to_json
 		end
 	rescue Exception => e
-		@error_message = "RSS source is broken... Please check your RSS source and see if it's still available."
-		@error_exception = e
-		haml :exception
+		status 400
+		{ reason: 'BROKEN_URL' }.to_json
 	end
 end
 
-get '/feeds/show/:id' do |id|
-	feed = Feed.find_by_id(id)
-	redirect not_found if !feed
 
-	rss_content = ""
-	begin
-		open(feed.url) do |f|
-			rss_content = f.read
-		end
-	rescue Exception => e
-		@error_message = "RSS source is broken... Please check your RSS source and see if it's still available."
-		@error_exception = e
-		haml :exception
-	end
-
-	@rss = RSS::Parser.parse(rss_content, false)
-
-	haml :"feeds/show"
+# TODO with not tests.
+delete '/feeds/:id' do |id|
+	Feed.destroy id
 end
+
 
 not_found do
-	"This is not found~~"
+	"This is not found."
 end

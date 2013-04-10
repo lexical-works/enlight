@@ -1,5 +1,11 @@
-#
+require 'mongo_mapper'
 
-class Feed < ActiveRecord::Base
-	
+class Feed
+	include MongoMapper::Document
+
+	key :url,			String
+	key :title,			String
+	key :description,	String
+
+	timestamps!
 end
