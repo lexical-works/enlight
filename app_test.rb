@@ -64,4 +64,21 @@ class AppTest < Test::Unit::TestCase
 		json = JSON.parse last_response.body
 		assert_equal 'BROKEN_URL', json['reason']
 	end
+
+	def test_delete_feed_success
+		url = 'http://www.engadget.com/rss.xml'
+		post '/feeds', { url: url }.to_json, 'CONTENT_TYPE' => 'application/json'
+		assert_equal last_response.status, 200
+		json = JSON.parse last_response.body
+		assert json.has_key?('id')
+
+		id = json['id']
+		delete "/feeds/#{id}"
+		assert_equal last_response.status, 200
+	end
+
+	def test_delete_feed_bad_id
+		delete '/feeds/123'
+		assert_equal last_response.status, 404
+	end
 end
