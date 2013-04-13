@@ -27,7 +27,7 @@ get '/feeds' do
 end
 
 
-# Completed with no tests.
+# Completed.
 get '/feeds/:id' do |id|
 	feed = Feed.find id
 	if feed then
@@ -48,7 +48,7 @@ put '/feeds/:id' do |id|
 end
 
 
-# Completed and fully tested.
+# Completed.
 post '/feeds' do
 	data = JSON.parse request.body.read.to_s
 	if data.has_key?('url') == false then
@@ -76,9 +76,15 @@ post '/feeds' do
 end
 
 
-# TODO with not tests.
+# Completed.
 delete '/feeds/:id' do |id|
-	Feed.destroy id
+	feed = Feed.find id
+	if feed then
+		feed.destroy
+		status 200
+	else
+		status 404
+	end
 end
 
 
