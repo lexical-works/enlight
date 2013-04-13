@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'sinatra/activerecord'
 require 'sinatra/mongomapper'
 require 'sinatra/reloader' if (development? && !defined? $_rakefile)
 require 'haml'
