@@ -39,12 +39,19 @@ get '/feeds/:id' do |id|
 end
 
 
-# TODO with no tests.
+# Completed.
 put '/feeds/:id' do |id|
 	feed = Feed.find id
-	feed.url = params[:url]
-	feed.save
-	feed.to_json
+	if !feed then
+		status 404
+	elsif params.key? 'url' then
+		feed.url = params[:url]
+		feed.save
+		status 200
+		feed.to_json
+	else
+		status 404
+	end
 end
 
 

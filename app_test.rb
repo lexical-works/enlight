@@ -40,6 +40,36 @@ class AppTest < Test::Unit::TestCase
 		assert_equal last_response.status, 404
 	end
 
+	def test_put_feed_success
+		feed = Feed.first
+		id = feed.id
+		url0 = feed.url
+		url1 = url0 + "somesuffix"
+
+		put "/feeds/#{id}", :url => url1
+		json = JSON.parse last_response.body
+		assert_equal json['url'], url1
+
+		put "/feeds/#{id}", :url => url0
+		json = JSON.parse last_response.body
+		assert_equal json['url'], url0
+	end
+
+	def test_put_feed_bad_id
+		id = 250
+		put "/feeds/#{id}", :url => "http://www.google.com"
+		assert_equal last_response.status, 404
+	end
+
+	def test_put_feed_missing_parameter
+		feed = Feed.first
+		id = feed.id
+		url = feed.url
+		
+		put "/feeds/#{id}"
+		assert_equal last_response.status, 404
+	end
+
 	def test_add_feed_success
 		url = 'http://www.engadget.com/rss.xml'
 		post '/feeds', { url: url }.to_json, 'CONTENT_TYPE' => 'application/json'
