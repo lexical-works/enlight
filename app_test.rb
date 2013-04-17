@@ -71,6 +71,16 @@ class AppTest < Test::Unit::TestCase
 		assert_equal 'MISSING_PARAMETER', json['reason']
 	end
 
+	def test_put_feed_broken_url
+		feed = Feed.first
+		id = feed.id
+
+		put "/feeds/#{id}", :url => "http://www.google.com"
+		json = JSON.parse last_response.body
+		assert_equal 400, last_response.status
+		assert_equal 'BROKEN_URL', json['reason']
+	end
+
 	def test_add_feed_success
 		url = 'http://www.engadget.com/rss.xml'
 		post '/feeds', { url: url }.to_json, 'CONTENT_TYPE' => 'application/json'

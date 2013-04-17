@@ -59,7 +59,6 @@ put '/feeds/:id' do |id|
 				feed.to_json
 			end
 		rescue Exception => e
-			puts e
 			status 400
 			{ reason: 'BROKEN_URL' }.to_json
 		end
