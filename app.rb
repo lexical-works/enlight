@@ -45,12 +45,27 @@ put '/feeds/:id' do |id|
 	if !feed then
 		status 404
 	elsif params.key? 'url' then
-		feed.url = params[:url]
-		feed.save
-		status 200
-		feed.to_json
+		begin
+			open(params[:url]) do |f|
+				rss_content = f.read
+				rss = RSS::Parser.parse(rss_content, false)
+				
+				feed.title = rss.channel.title
+				feed.url = params[:url]
+				feed.description = rss.channel.description
+				feed.save
+
+				status 200
+				feed.to_json
+			end
+		rescue Exception => e
+			puts e
+			status 400
+			{ reason: 'BROKEN_URL' }.to_json
+		end
 	else
-		status 404
+		status 400
+		{ reason: 'MISSING_PARAMETER' }.to_json
 	end
 end
 

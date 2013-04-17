@@ -41,18 +41,17 @@ class AppTest < Test::Unit::TestCase
 	end
 
 	def test_put_feed_success
+		url0 = 'http://www.engadget.com/rss.xml'
+		url1 = 'http://songshuhui.net/feed'
+
 		feed = Feed.first
 		id = feed.id
-		url0 = feed.url
-		url1 = url0 + "somesuffix"
+		url = feed.url == url0 ? url1 : url0
 
-		put "/feeds/#{id}", :url => url1
+		put "/feeds/#{id}", :url => url
 		json = JSON.parse last_response.body
-		assert_equal json['url'], url1
-
-		put "/feeds/#{id}", :url => url0
-		json = JSON.parse last_response.body
-		assert_equal json['url'], url0
+		assert_equal 200, last_response.status
+		assert_equal url, json['url']
 	end
 
 	def test_put_feed_bad_id
@@ -67,7 +66,9 @@ class AppTest < Test::Unit::TestCase
 		url = feed.url
 		
 		put "/feeds/#{id}"
-		assert_equal last_response.status, 404
+		json = JSON.parse last_response.body
+		assert_equal last_response.status, 400
+		assert_equal 'MISSING_PARAMETER', json['reason']
 	end
 
 	def test_add_feed_success
